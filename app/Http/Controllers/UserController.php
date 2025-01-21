@@ -14,7 +14,17 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        $guests = User::where('role', 'guest')->get();
+        $guests = User::where('role', 'guest')
+            ->with([
+                'roomReservation' => function ($query) {
+                    $query->orderBy('arrival_date', 'desc');
+                },
+                'activityReservation' => function ($query) {
+                    $query->orderBy('reservation_date', 'desc');
+                }
+            ])
+            ->orderBy('name', 'asc')
+            ->get();
         $staffs = User::where('role', 'staff')->where('role', '!=', 'admin')->get();
         $admins = User::where('role', 'admin')->get();
 
@@ -82,9 +92,10 @@ class UserController extends Controller
     }
 
     // Supprimer un utilisateur
-    public function destroy(User $user)
+    public function destroy($user_id)
     {
-        $this->authorize('delete', $user);
+        $user = User::where('id', $user_id)->first();
+        // $this->authorize('delete', $user);
 
         $user->delete();
 

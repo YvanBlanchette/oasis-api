@@ -29,7 +29,7 @@ class RoomReservationSeeder extends Seeder
         for ($userId = 4; $userId <= 23; $userId++) {
             for ($lodgingId = 1; $lodgingId <= 100; $lodgingId++) {
                 $arrivalDate = date('Y-m-d', rand($summerStartTimestamp, $summerEndTimestamp));
-                $departureDate = date('Y-m-d', rand(strtotime($arrivalDate), $summerEndTimestamp));
+                $departureDate = date('Y-m-d', strtotime($arrivalDate . ' + ' . rand(3, 7) . ' days'));
                 $nbGuests = rand(1, 4);
                 $price = rand(100, 500);
 
@@ -48,7 +48,7 @@ class RoomReservationSeeder extends Seeder
         for ($userId = 4; $userId <= 23; $userId++) {
             for ($lodgingId = 1; $lodgingId <= 100; $lodgingId++) {
                 $arrivalDate = date('Y-m-d', rand($winterStartTimestamp, $winterEndTimestamp));
-                $departureDate = date('Y-m-d', rand(strtotime($arrivalDate), $winterEndTimestamp));
+                $departureDate = date('Y-m-d', strtotime($arrivalDate . ' + ' . rand(3, 7) . ' days'));
                 $nbGuests = rand(1, 4);
                 $price = rand(100, 500);
 

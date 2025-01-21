@@ -12,10 +12,8 @@ return new class extends Migration {
     {
         Schema::create('activity_reservations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('activity_id');
-            $table->foreign('activity_id')->references('id')->on('activities');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('activity_id')->constrained('activities')->onDelete('cascade');
             $table->date('reservation_date');
             $table->time('reservation_time');
             $table->integer('nb_participants');
