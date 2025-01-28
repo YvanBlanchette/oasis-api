@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Staff;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,26 +15,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@aubergelm.com',
+        Staff::factory()->create([
+            'displayName' => 'Admin',
+            'email' => 'admin@oasis.com',
             'password' => Hash::make('password'),
+            'phone' => '514-123-4567',
+            'address' => '123 rue Sainte-Catherine, Montréal, QC H2X 1K5',
+            'photoURL' => 'https://randomuser.me/api/portraits/men/29.jpg',
             'role' => 'admin',
+            'status' => 'active',
+            'hireDate' => now(),
         ]);
 
-        User::factory()->create([
-            'name' => 'Employé 001',
-            'email' => 'staff@aubergelm.com',
+        Staff::factory()->create([
+            'displayName' => 'Employé',
+            'email' => 'staff@oasis.com',
             'password' => Hash::make('password'),
+            'phone' => '514-123-4567',
+            'address' => '234 boulevard Saint-Jean, Montréal, QC H2X 1K5',
+            'photoURL' => 'https://randomuser.me/api/portraits/women/29.jpg',
             'role' => 'staff',
+            'status' => 'active',
+            'hireDate' => now(),
         ]);
 
         User::factory()->create([
-            'name' => 'Client 001',
-            'email' => 'guest@aubergelm.com',
+            'displayName' => 'Client',
+            'email' => 'client@oasis.com',
             'password' => Hash::make('password'),
-            'role' => 'guest',
         ]);
+
+        Staff::factory(10)->create();
 
         $this->call([
             ActivitySeeder::class,
@@ -44,15 +56,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            LodgingSeeder::class,
-        ]);
-
-        $this->call([
-            RoomReservationSeeder::class,
-        ]);
-
-        $this->call([
-            ActivityReservationSeeder::class,
+            ReservationSeeder::class,
         ]);
     }
 }

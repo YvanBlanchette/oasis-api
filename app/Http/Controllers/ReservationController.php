@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RoomReservation;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 
-class RoomReservationController extends Controller
+class ReservationController extends Controller
 {
     public function index()
     {
-        $reservations = RoomReservation::with('lodging', 'user')->orderBy('arrival_date', 'desc')->paginate();
+        $reservations = Reservation::with('activity', 'user')->orderBy('reservation_date', 'desc')->paginate();
         return response()->json([
             'reservations' => $reservations,
             'message' => 'Réservations récupérées avec succès!'
@@ -18,7 +18,7 @@ class RoomReservationController extends Controller
 
     public function show($reservation_id)
     {
-        $reservation = RoomReservation::find($reservation_id)->with('lodging', 'user')->first();
+        $reservation = Reservation::find($reservation_id);
         return response()->json([
             'reservation' => $reservation,
             'message' => 'Réservation récupérée avec succès!'
@@ -28,32 +28,32 @@ class RoomReservationController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'lodging_id' => 'required|integer',
+            'activity_id' => 'required|integer',
             'user_id' => 'required|integer',
-            'arrival_date' => 'required|date',
-            'departure_date' => 'required|date',
-            'nb_guests' => 'required|integer',
+            'reservation_date' => 'required|date',
+            'reservation_time' => 'required|time',
+            'nb_participants' => 'required|integer',
             'total_price' => 'required|decimal:10,2',
         ]);
 
-        $reservation = RoomReservation::create($validatedData);
+        $reservation = Reservation::create($validatedData);
 
         return response()->json([
             'reservation' => $reservation,
-            'message' => 'Réservation crée avec succès!'
+            'message' => 'Réservation effectuée avec succès!'
         ], 201);
     }
 
 
-    public function update(Request $request, RoomReservation $reservation)
+    public function update(Request $request, Reservation $reservation)
     {
         $validatedData = $request->validate([
-            'lodging_id' => 'required|integer',
+            'activity_id' => 'required|integer',
             'user_id' => 'required|integer',
-            'arrival_date' => 'required|date',
-            'departure_date' => 'required|date',
-            'nb_guests' => 'required|integer',
-            'total_price' => 'required|decimal:10,2',
+            'reservation_date' => 'required|date',
+            'reservation_time' => 'required|time',
+            'nb_participants' => 'required|integer',
+            'price' => 'required|decimal:10,2',
         ]);
 
         $reservation->update($validatedData);
@@ -64,7 +64,7 @@ class RoomReservationController extends Controller
         ], 200);
     }
 
-    public function destroy(RoomReservation $reservation)
+    public function destroy(Reservation $reservation)
     {
         $reservation->delete();
 

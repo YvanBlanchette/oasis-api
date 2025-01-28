@@ -31,21 +31,7 @@ class ActivityController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'required|string',
-            'category' => 'required|string',
-            'status' => 'required|boolean',
-            'pricePerAdult' => 'required|integer',
-            'pricePerChildren' => 'nullable|integer',
-            'durationInMinutes' => 'required|integer',
-            'ageRestriction' => 'required|string',
-            'isIncluded' => 'required|boolean',
-            'notes' => 'nullable|string',
-        ]);
-
-        $activity = Activity::create($validatedData);
+        $activity = Activity::create($request->all());
 
         return response()->json([
             'activity' => $activity,
@@ -54,23 +40,10 @@ class ActivityController extends Controller
     }
 
 
-    public function update(Request $request, Activity $activity)
+    public function update(Request $request, $activity_id)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'required|string',
-            'category' => 'required|string',
-            'status' => 'required|boolean',
-            'pricePerAdult' => 'required|integer',
-            'pricePerChildren' => 'nullable|integer',
-            'durationInMinutes' => 'required|integer',
-            'ageRestriction' => 'required|string',
-            'isIncluded' => 'required|boolean',
-            'notes' => 'nullable|string',
-        ]);
-
-        $activity->update($validatedData);
+        $activity = Activity::where('id', $activity_id)->first();
+        $activity->update($request->all());
 
         return response()->json([
             'activity' => $activity,
@@ -87,15 +60,13 @@ class ActivityController extends Controller
         ], 200);
     }
 
-
-    public function changeStatus(Request $request, Activity $activity)
+    // Method to toggle activity status
+    public function toggleStatus($activity_id)
     {
-        $validatedData = $request->validate([
-            'status' => 'required|boolean',
-        ]);
+        $activity = Activity::where('id', $activity_id)->first();
 
         $activity->update([
-            'status' => $validatedData['status'],
+            'status' => !$activity->status,
         ]);
 
         return response()->json([

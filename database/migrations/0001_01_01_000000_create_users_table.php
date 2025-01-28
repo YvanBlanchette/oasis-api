@@ -12,14 +12,13 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('displayName');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default('guest');
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->string('image')->default('https://static.vecteezy.com/system/resources/thumbnails/004/511/281/small/default-avatar-photo-placeholder-profile-picture-vector.jpg')->nullable();
+            $table->string('photoURL')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

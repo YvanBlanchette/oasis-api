@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -13,28 +14,14 @@ class UserController extends Controller
     // List all users
     public function index()
     {
-        $users = User::all();
-        $guests = User::where('role', 'guest')
-            ->with([
-                'roomReservation' => function ($query) {
-                    $query->orderBy('arrival_date', 'desc');
-                },
-                'activityReservation' => function ($query) {
-                    $query->orderBy('reservation_date', 'desc');
-                }
-            ])
-            ->orderBy('name', 'asc')
+        $users = User::where('email', 'not like', '%@oasis.com')
+            ->orderBy('displayName', 'asc')
             ->get();
-        $staffs = User::where('role', 'staff')->where('role', '!=', 'admin')->get();
-        $admins = User::where('role', 'admin')->get();
 
         return response()->json(
             [
                 'users' => $users,
-                'guests' => $guests,
-                'staffs' => $staffs,
-                'admins' => $admins,
-                'message' => 'Liste des utilisateurs récupérée avec succès!'
+                'message' => 'La liste des utilisateurs à récupérée de la bd avec succès!'
             ],
             200
         );
@@ -50,44 +37,29 @@ class UserController extends Controller
     // Create a new user
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
-            'role' => 'required|string',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'image' => 'required|string',
-        ]);
 
-        $user = User::create($validatedData);
+        $userData = $request->all();
+
+        $user = User::create($userData);
 
         return response()->json([
             'user' => $user,
-            'message' => 'Utilisateur enregistré avec succès!'
+            'message' => 'Utilisateur enregistré dans la bd avec succès!'
         ], 201);
     }
 
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, $user_id)
     {
-        $this->authorize('update', $user);
+        $user = User::where('id', $user_id)->first();
 
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'required|confirmed',
-            'role' => 'required|string',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'image' => 'required|string',
-        ]);
+        $userData = $request->all();
 
-        $user->update($validatedData);
+        $user->update($userData);
 
         return response()->json([
             'user' => $user,
-            'message' => 'Utilisateur modifié avec succès!'
+            'message' => 'Utilisateur modifié dans la bd avec succès!'
         ], 200);
     }
 
@@ -95,12 +67,11 @@ class UserController extends Controller
     public function destroy($user_id)
     {
         $user = User::where('id', $user_id)->first();
-        // $this->authorize('delete', $user);
 
         $user->delete();
 
         return response()->json([
-            'message' => 'Utilisateur supprimé avec succès!'
+            'message' => 'Utilisateur supprimé de la bd avec succès!'
         ], 200);
     }
 }

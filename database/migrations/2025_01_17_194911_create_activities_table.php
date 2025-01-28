@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string('name');
             $table->text('description');
             $table->string('image');
-            $table->string('category');
             $table->boolean('status')->default(false);
             $table->integer('pricePerAdult');
             $table->integer('pricePerChildren')->nullable();

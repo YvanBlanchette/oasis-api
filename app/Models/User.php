@@ -21,13 +21,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'displayName',
         'email',
         'password',
-        'role',
         'phone',
         'address',
-        'image'
+        'photoURL'
     ];
 
     /**
@@ -53,15 +52,9 @@ class User extends Authenticatable
         ];
     }
 
-    // A user has many room reservations
-    public function roomReservation(): HasMany
-    {
-        return $this->hasMany(RoomReservation::class);
-    }
-
     // A user has many activity reservations
-    public function activityReservation(): HasMany
+    public function reservation(): HasMany
     {
-        return $this->hasMany(ActivityReservation::class);
+        return $this->hasMany(Reservation::class);
     }
 }

@@ -11,7 +11,6 @@ class Activity extends Model
         'name',
         'description',
         'image',
-        'category',
         'status',
         'pricePerAdult',
         'pricePerChildren',
@@ -21,9 +20,9 @@ class Activity extends Model
         'notes'
     ];
 
-    // An activity has many reservations 
+    // An activity has many reservations
     public function reservations(): HasMany
     {
-        return $this->hasMany(ActivityReservation::class);
+        return $this->hasMany(Reservation::class);
     }
 }
