@@ -51,8 +51,10 @@ class ActivityController extends Controller
         ], 200);
     }
 
-    public function destroy(Activity $activity)
+    public function destroy($activity_id)
     {
+        $activity = Activity::where('id', $activity_id)->first();
+
         $activity->delete();
 
         return response()->json([

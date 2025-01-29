@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ReservationController extends Controller
@@ -24,19 +25,33 @@ class ReservationController extends Controller
             'message' => 'Réservation récupérée avec succès!'
         ]);
     }
+    public function getUserReservations(Request $request)
+    {
+        $user_email = $request['email'];
+        $user = User::where('email', $user_email)->first();
+
+        $reservations = Reservation::with('activity', 'user')->where('user_id', $user->id)->orderBy('reservation_date', 'desc')->get();
+        return response()->json([
+            'reservations' => $reservations,
+            'message' => 'Réservations de ' . $user->displayName . ' récupérées avec succès'
+        ]);
+
+    }
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'activity_id' => 'required|integer',
-            'user_id' => 'required|integer',
-            'reservation_date' => 'required|date',
-            'reservation_time' => 'required|time',
-            'nb_participants' => 'required|integer',
-            'total_price' => 'required|decimal:10,2',
-        ]);
 
-        $reservation = Reservation::create($validatedData);
+        $user = User::where('email', $request['user_email'])->first();
+
+        $reservation = Reservation::create([
+            'activity_id' => $request['activity_id'],
+            'user_id' => $user->id,
+            'reservation_date' => $request['reservation_date'],
+            'reservation_time' => $request['reservation_time'],
+            'nb_adults' => $request['nb_adults'],
+            'nb_children' => $request['nb_children'],
+            'total_price' => $request['total_price'],
+        ]);
 
         return response()->json([
             'reservation' => $reservation,
@@ -45,18 +60,18 @@ class ReservationController extends Controller
     }
 
 
-    public function update(Request $request, Reservation $reservation)
+    public function update(Request $request, $reservation_id)
     {
-        $validatedData = $request->validate([
-            'activity_id' => 'required|integer',
-            'user_id' => 'required|integer',
-            'reservation_date' => 'required|date',
-            'reservation_time' => 'required|time',
-            'nb_participants' => 'required|integer',
-            'price' => 'required|decimal:10,2',
-        ]);
+        $reservation = Reservation::find($reservation_id);
 
-        $reservation->update($validatedData);
+        $reservation->update([
+            'activity_id' => $request['activity_id'],
+            'reservation_date' => $request['reservation_date'],
+            'reservation_time' => $request['reservation_time'],
+            'nb_adults' => $request['nb_adults'],
+            'nb_children' => $request['nb_children'],
+            'total_price' => $request['total_price'],
+        ]);
 
         return response()->json([
             'reservation' => $reservation,
@@ -64,12 +79,29 @@ class ReservationController extends Controller
         ], 200);
     }
 
-    public function destroy(Reservation $reservation)
+    public function destroy($reservation_id)
     {
+        $reservation = Reservation::find($reservation_id);
         $reservation->delete();
 
         return response()->json([
             'message' => 'Réservation supprimée avec succès!'
         ], 200);
+    }
+
+    public function removeAllUserReservations(Request $request)
+    {
+        $user_email = $request->email;
+        $user = User::where('email', $user_email)->first();
+
+        $reservations = Reservation::where('user_id', $user->id)->get();
+
+        foreach ($reservations as $reservation) {
+            $reservation->delete();
+        }
+        return response()->json([
+            'message' => 'Panier de réservations vidé avec succès'
+        ]);
+
     }
 }

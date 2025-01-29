@@ -9,11 +9,6 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ReservationController;
 
 
-// Activities routes
-Route::get('/activities', [ActivityController::class, 'index']);
-Route::get('/activities/{activity_id}', [ActivityController::class, 'show']);
-
-
 // Profile routes
 Route::get('/profile', [AuthController::class, 'getUser']);
 
@@ -32,10 +27,12 @@ Route::get('/staff/{staff_id}', [StaffController::class, 'show']);
 Route::post('/staff', [StaffController::class, 'store']);
 Route::put('/staff/{staff_id}', [StaffController::class, 'update']);
 Route::delete('/staff/{staff_id}', [StaffController::class, 'destroy']);
-Route::patch('/staff/{staff_id}/toggle-status', [StaffController::class, 'toggleStatus']);
+Route::get('/staff/{staff_id}/toggle-status', [StaffController::class, 'toggleStatus']);
 
 
 // Activities routes
+Route::get('/activities', [ActivityController::class, 'index']);
+Route::get('/activities/{activity_id}', [ActivityController::class, 'show']);
 Route::post('/activities', [ActivityController::class, 'store']);
 Route::put('/activities/{activity_id}', [ActivityController::class, 'update']);
 Route::delete('/activities/{activity_id}', [ActivityController::class, 'destroy']);
@@ -45,10 +42,8 @@ Route::patch('/activities/{activity_id}/toggle-status', [ActivityController::cla
 // Reservation routes
 Route::get('/reservations', [ReservationController::class, 'index']);
 Route::get('/reservations/{reservation_id}', [ReservationController::class, 'show']);
+Route::post('/reservations/users/', [ReservationController::class, 'getUserReservations']);
+Route::post('/reservations/users/remove-all', [ReservationController::class, 'removeAllUserReservations']);
 Route::post('/reservations', [ReservationController::class, 'store']);
 Route::put('/reservations/{reservation_id}', [ReservationController::class, 'update']);
-
-
-
-
-
+Route::delete('/reservations/{reservation_id}', [ReservationController::class, 'destroy']);

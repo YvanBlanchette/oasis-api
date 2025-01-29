@@ -23,7 +23,8 @@ class ReservationSeeder extends Seeder
             $activityId = rand(1, 16);
             $reservationDate = Carbon::createFromTimestamp(rand($startDate->timestamp, $endDate->timestamp));
             $reservationTime = Carbon::createFromTime(rand(9, 17), 0, 0);
-            $nbParticipants = rand(1, 10);
+            $nbAdults = rand(1, 10);
+            $nbChildren = rand(1, 10);
             $totalPrice = rand(50, 200);
 
             Reservation::create([
@@ -31,7 +32,8 @@ class ReservationSeeder extends Seeder
                 'user_id' => $userId,
                 'reservation_date' => $reservationDate->format('Y-m-d'),
                 'reservation_time' => $reservationTime->format('H:i:s'),
-                'nb_participants' => $nbParticipants,
+                'nb_adults' => $nbAdults,
+                'nb_children' => $nbChildren,
                 'total_price' => $totalPrice,
             ]);
         }

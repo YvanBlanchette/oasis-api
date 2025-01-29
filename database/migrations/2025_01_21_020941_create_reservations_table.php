@@ -16,7 +16,8 @@ return new class extends Migration {
             $table->foreignId('activity_id')->constrained('activities')->onDelete('cascade');
             $table->date('reservation_date');
             $table->time('reservation_time');
-            $table->integer('nb_participants');
+            $table->integer('nb_adults');
+            $table->integer('nb_children')->nullable();
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
         });
