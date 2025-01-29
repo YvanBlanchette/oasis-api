@@ -17,7 +17,7 @@ Dans le cadre du cours d'intégration d'interface utilisateur de l'AEC en dével
 
 
 
-#### Frontend
+#### Frontend (Vue js)
 1. Cloner le repo du frontend
 ```git clone https://github.com/YvanBlanchette/oasis.git```
 2. Installer les dépendances
